@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-abrir-trade"
+description = "Enables the abrir_trade command without any pre-configured scope."
+commands.allow = ["abrir_trade"]
+
+[[permission]]
+identifier = "deny-abrir-trade"
+description = "Denies the abrir_trade command without any pre-configured scope."
+commands.deny = ["abrir_trade"]

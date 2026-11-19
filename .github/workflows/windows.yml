@@ -1,0 +1,40 @@
+name: PokeDeck para Windows
+
+on:
+  workflow_dispatch: {}
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Compilar
+        run: cargo build --release
+
+      - name: Montar o pacote
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist/PokeDeck | Out-Null
+          Copy-Item target/release/pokedeck.exe dist/PokeDeck/PokeDeck.exe
+          Copy-Item -Recurse hunt dist/PokeDeck/hunt
+          Copy-Item LEIAME.md dist/PokeDeck/LEIAME.md
+          Compress-Archive -Path dist/PokeDeck -DestinationPath dist/PokeDeck-windows.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PokeDeck-windows
+          path: dist/PokeDeck-windows.zip
+
+      - name: Publicar Release (só em tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/PokeDeck-windows.zip

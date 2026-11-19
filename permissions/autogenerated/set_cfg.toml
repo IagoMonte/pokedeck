@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-set-cfg"
+description = "Enables the set_cfg command without any pre-configured scope."
+commands.allow = ["set_cfg"]
+
+[[permission]]
+identifier = "deny-set-cfg"
+description = "Denies the set_cfg command without any pre-configured scope."
+commands.deny = ["set_cfg"]

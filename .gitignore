@@ -1,0 +1,5 @@
+target/
+gen/
+*.log
+contas.json
+sessao*.json

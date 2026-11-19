@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-set-foco"
+description = "Enables the set_foco command without any pre-configured scope."
+commands.allow = ["set_foco"]
+
+[[permission]]
+identifier = "deny-set-foco"
+description = "Denies the set_foco command without any pre-configured scope."
+commands.deny = ["set_foco"]

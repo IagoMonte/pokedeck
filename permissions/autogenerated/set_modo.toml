@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-set-modo"
+description = "Enables the set_modo command without any pre-configured scope."
+commands.allow = ["set_modo"]
+
+[[permission]]
+identifier = "deny-set-modo"
+description = "Denies the set_modo command without any pre-configured scope."
+commands.deny = ["set_modo"]

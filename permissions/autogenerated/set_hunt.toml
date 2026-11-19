@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-set-hunt"
+description = "Enables the set_hunt command without any pre-configured scope."
+commands.allow = ["set_hunt"]
+
+[[permission]]
+identifier = "deny-set-hunt"
+description = "Denies the set_hunt command without any pre-configured scope."
+commands.deny = ["set_hunt"]

@@ -1,0 +1,267 @@
+<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><title>PokeDeck</title>
+<style>
+:root{--bg:#0f0e17;--side:#16141f;--card:#1c1a29;--card2:#232037;--line:#ffffff12;--fg:#eceaf6;--mut:#8b86a6;--acc:#8b5cf6;--acc2:#a78bfa;--ok:#34d399;--bad:#f87171;--warn:#fbbf24;--sc:#38bdf8;--at:#fb923c;color-scheme:dark}
+@media (prefers-color-scheme:light){:root{--bg:#f4f2fb;--side:#ebe8f6;--card:#fff;--card2:#f1eefb;--line:#0000001a;--fg:#1b1730;--mut:#6b6585;--acc:#7c3aed;color-scheme:light}}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--fg);font:13px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;display:grid;grid-template-columns:330px 1fr;grid-template-rows:46px 1fr;overflow:hidden}
+button{border:0;border-radius:8px;padding:7px 10px;background:var(--card2);color:var(--fg);cursor:pointer;font:inherit;font-size:12px;transition:background .12s}
+button:hover{background:color-mix(in srgb,var(--acc) 30%,var(--card2))}
+button.on{background:var(--acc);color:#fff}
+button.pri{background:var(--acc);color:#fff}
+button:disabled{opacity:.4;cursor:default}
+#side{grid-row:1/3;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+#side h1{margin:0;padding:12px 14px;font-size:15px;display:flex;justify-content:space-between;align-items:center;letter-spacing:.01em}
+#side h1 b{display:flex;align-items:center;gap:8px}
+#side h1 b:before{content:"";width:14px;height:14px;border-radius:50%;background:linear-gradient(#ef4444 50%,#fff 50%);box-shadow:inset 0 0 0 2px #0006}
+#lista{overflow:auto;padding:0 10px 10px;flex:1}
+.conta{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 11px;margin-bottom:8px;cursor:pointer;position:relative}
+.conta:hover{border-color:#ffffff30}
+.conta.sel{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc) inset}
+.conta .top{display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--mut);flex:none}
+.dot.on{background:var(--ok);box-shadow:0 0 6px var(--ok)}.dot.bad{background:var(--bad)}.dot.sc{background:var(--sc)}.dot.at{background:var(--at)}.dot.jan{background:var(--acc2)}
+.nick{font-weight:650;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lv{font-size:11px;color:var(--mut)}
+.st{font-size:11px;color:var(--mut);margin:2px 0 0 16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini{display:flex;gap:10px;margin:6px 0 8px 16px;font-size:11px;color:var(--mut);font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.mini b{color:var(--fg);font-weight:600}
+.modos{display:flex;background:var(--bg);border-radius:9px;padding:2px;gap:2px}
+.modos button{flex:1;background:transparent;padding:5px 2px;font-size:11px;border-radius:7px}
+.modos button.on{background:var(--acc);color:#fff}.modos button.sc.on{background:var(--sc);color:#04202c}.modos button.at.on{background:var(--at);color:#2a1100}
+#rodape{padding:8px 14px;font-size:11px;color:var(--mut);border-top:1px solid var(--line)}
+#bar{display:flex;align-items:center;gap:6px;padding:0 14px;border-bottom:1px solid var(--line);background:var(--side);min-width:0}
+#bar .sep{flex:1}
+.seg{display:flex;background:var(--bg);border-radius:9px;padding:2px;gap:2px}
+.seg button{background:transparent;padding:5px 12px}.seg button.on{background:var(--acc)}
+.tab{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#main{overflow:auto;padding:18px 22px;min-height:0}
+.head{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.head h2{margin:0;font-size:20px}.head .sub{color:var(--mut);font-size:12px}
+.head .sp{flex:1}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.tabs button{background:transparent;border-radius:8px 8px 0 0;padding:9px 16px;color:var(--mut);font-size:13px;border-bottom:2px solid transparent}
+.tabs button.on{color:var(--fg);border-bottom-color:var(--acc);background:transparent}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:14px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.tile .k{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.07em}
+.tile .v{font-size:22px;font-weight:700;margin:3px 0 1px;font-variant-numeric:tabular-nums}
+.tile .d{font-size:11px;color:var(--mut)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px;align-items:start}
+.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 16px}
+.box>h3{margin:0 0 10px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.box>h3 small{font-weight:400;color:var(--mut);font-size:11px}
+.box.off .corpo{opacity:.55}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.kv:last-child{border:0}.kv span:first-child{color:var(--mut)}
+.bar{height:6px;background:var(--bg);border-radius:4px;overflow:hidden;margin:5px 0 7px}.bar i{display:block;height:100%;background:var(--acc)}
+.bar.hp i{background:var(--ok)}.bar.hp.low i{background:var(--bad)}
+.pk{display:flex;justify-content:space-between;padding:5px 8px;border-radius:7px}.pk.ativo{background:color-mix(in srgb,var(--acc) 22%,transparent)}
+.big{font-size:17px;font-weight:700}
+.log{font:11.5px ui-monospace,monospace;color:var(--mut);max-height:520px;overflow:auto;white-space:pre-wrap;line-height:1.5}
+.mut{color:var(--mut)}.hint{font-size:11.5px;color:var(--mut);margin-top:10px;line-height:1.45}
+label.r{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0}
+label.r>span:first-child{color:var(--fg)}
+select,input[type=number]{background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:inherit;max-width:62%;color-scheme:dark light}
+select:focus,input:focus{outline:2px solid var(--acc);outline-offset:-1px}
+input[type=number]{width:110px;text-align:right}
+textarea{width:100%;height:90px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:8px;font:11px monospace;color-scheme:dark light}
+.sw{position:relative;width:38px;height:22px;flex:none;display:inline-block}
+.sw input{opacity:0;width:100%;height:100%;margin:0;position:absolute;cursor:pointer;z-index:1}
+.sw i{position:absolute;inset:0;background:var(--bg);border:1px solid var(--line);border-radius:12px;transition:.15s}
+.sw i:after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--mut);transition:.15s}
+.sw input:checked+i{background:var(--acc);border-color:var(--acc)}.sw input:checked+i:after{left:18px;background:#fff}
+.sub2{margin:12px 0 2px;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--mut)}
+.tbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:12px}
+.tbl th{text-align:right;color:var(--mut);font-weight:500;padding:6px 7px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{text-align:right;padding:6px 7px;border-bottom:1px solid var(--line)}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl tr.atual td{background:color-mix(in srgb,var(--acc) 22%,transparent)}.tbl tr.bloq td{opacity:.4}
+.r-seguro{color:var(--ok)}.r-arriscado{color:var(--warn)}.r-umHit{color:var(--bad)}
+.toolbar{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}.toolbar .sp{flex:1}
+.vazio{margin:70px auto;max-width:440px;text-align:center;color:var(--mut)}
+.vazio .big{color:var(--fg);margin-bottom:8px}.vazio .acoes{display:flex;gap:8px;justify-content:center;margin-top:16px}
+.vazio button{padding:9px 16px;font-size:13px}
+dialog{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;width:440px;padding:18px}
+dialog::backdrop{background:#0008}
+</style></head><body>
+<aside id="side"><h1><b>PokeDeck</b><button class="pri" onclick="document.getElementById('dlg').showModal()">+ conta</button></h1><div id="lista"></div><div id="rodape"></div></aside>
+<header id="bar"></header>
+<main id="main"></main>
+<dialog id="dlg">
+ <h3 style="margin:0 0 6px">Adicionar conta</h3>
+ <p class="mut" style="margin:0 0 10px;font-size:12px">Cole o JSON de <code>localStorage['sessao']</code> do jogo (F12 → Application): <code>{"nick","token","provedor"}</code></p>
+ <textarea id="j"></textarea><p id="msg" class="hint" style="color:var(--bad)"></p>
+ <div style="display:flex;gap:8px;justify-content:flex-end"><button onclick="dlg.close()">Fechar</button><button class="pri" onclick="add()">Adicionar</button></div></dialog>
+<script>
+const {invoke}=window.__TAURI__.core,{listen}=window.__TAURI__.event;
+const $=s=>document.querySelector(s), n=v=>v==null?'—':Number(v).toLocaleString('pt-BR');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let S={contas:[],layout:'painel',views:[],foco:null,sel:null,versao:null,trade:false}; let versaoVista=null;
+const H={}, HA={}; let HT='xp'; // H[nick]={catalogo,rank,status}; HA[nick]=região escolhida; HT=aba do ranking
+let TAB='resumo'; try{TAB=localStorage.getItem('pd_tab')||'resumo'}catch(e){}
+const MODOS=[['ws','WS',''],['janela','Janela',''],['scanner','Scanner','sc'],['atuador','Atuador','at']];
+const DICA={ws:'só websocket (modo economia): o servidor caça sem janela — o mais leve',janela:'o jogo aberto, embutido aqui (automações também funcionam)',scanner:'coletor do trade/ (lê o mercado)',atuador:'atuador do trade/ (compra/anuncia)'};
+const pct=(a,b)=>b>0?Math.max(0,Math.min(100,a/b*100)):0;
+const cur=()=>S.contas.find(x=>x.nick===S.sel)||S.contas[0];
+const ruim=c=>/caiu|tomada|parou|encerrada/.test(c.status||'');
+const sw=(k,on)=>`<span class="sw"><input type="checkbox" data-cfg="${k}" ${on?'checked':''}><i></i></span>`;
+const opt=(arr,sel,f)=>arr.map(x=>`<option value="${f(x)[0]}" ${String(f(x)[0])===String(sel)?'selected':''}>${esc(f(x)[1])}</option>`).join('');
+const horas=c=>Math.max((Date.now()/1000-c.inicio)/3600,1/3600), porH=(c,v)=>n(Math.round(v/horas(c)));
+const jogando=c=>c.modo==='ws'||c.modo==='janela';
+
+let ultLista='';
+function rLista(){
+  const h=S.contas.map(c=>{
+    const k=ruim(c)?'bad':c.modo==='ws'?'on':c.modo==='janela'?'jan':c.modo==='scanner'?'sc':c.modo==='atuador'?'at':'';
+    const mini=jogando(c)&&c.inicio?`<div class="mini"><span><b>${n(c.kills)}</b> kills</span><span><b>${porH(c,c.xp_ganho)}</b> xp/h</span><span><b>${n(c.capturas)}</b> cap.</span></div>`:`<div class="mini"><span>coins <b>${n(c.gold)}</b></span></div>`;
+    return `<div class="conta ${c.nick===S.sel?'sel':''}" data-sel="${esc(c.nick)}">
+      <div class="top"><i class="dot ${k}"></i><span class="nick">${esc(c.nick)}</span><span class="lv">${c.level?'Lv '+c.level:''}</span></div>
+      <div class="st">${esc(c.status||'parada')}</div>${mini}
+      <div class="modos">${MODOS.filter(([m])=>S.trade||m==='ws'||m==='janela').map(([m,t,kk])=>`<button class="${kk} ${c.modo===m?'on':''}" title="${DICA[m]}" data-modo="${m}" data-nick="${esc(c.nick)}">${t}</button>`).join('')}</div></div>`}).join('')
+    ||'<p class="mut" style="padding:10px">Nenhuma conta. Use “+ conta”.</p>';
+  if(h!==ultLista){ultLista=h;$('#lista').innerHTML=h}
+}
+let ultBarra='';
+function rBarra(){
+  const L=[['painel','Painel'],['abas','Abas'],['grade','Grade'],['1n','1 + N']];
+  const h=`<div class="seg">${L.map(([k,t])=>`<button class="${S.layout===k?'on':''}" data-layout="${k}">${t}</button>`).join('')}</div><span class="sep"></span>`
+   +(S.layout==='painel'?'':S.views.map(v=>`<button class="tab ${v===S.foco?'on':''}" data-foco="${esc(v)}" title="${esc(v)}">${esc(v)}</button>`).join(''))
+   +(!S.trade?'':S.views.includes('◆ Trade')?'<button data-fechatrade="1">✕ Trade</button>':'<button data-trade="1">◆ Trade</button>');
+  if(h!==ultBarra){ultBarra=h;$('#bar').innerHTML=h}
+}
+
+function tResumo(c){
+  const ap=c.ativo, eq=c.equipe||[];
+  const xpb=c.xp_prox>c.xp_nivel?pct(c.xp-c.xp_nivel,c.xp_prox-c.xp_nivel):0;
+  return `<div class="tiles">
+   <div class="tile"><div class="k">Nível</div><div class="v">${c.level??'—'}</div><div class="bar"><i style="width:${xpb}%"></i></div><div class="d">${n(c.xp-c.xp_nivel)} / ${n(c.xp_prox-c.xp_nivel)} XP${c.vip?' · VIP':''}</div></div>
+   <div class="tile"><div class="k">Coins</div><div class="v">${n(c.gold)}</div><div class="d">+${porH(c,c.ouro_ganho)}/h nesta sessão</div></div>
+   <div class="tile"><div class="k">Gemas / Diamantes</div><div class="v">${n(c.orbs)}</div><div class="d">${n(c.diamonds)} diamantes</div></div>
+   <div class="tile"><div class="k">Hunt</div><div class="v" style="font-size:17px">${esc(c.hunt_nome||'—')}</div><div class="d">${c.no_centro?'no Centro Pokémon':'caçando'} · ${porH(c,c.kills)} kills/h</div></div></div>
+  <div class="grid">
+   <div class="box"><h3>Pokémon ativo</h3>
+    ${ap?`<div class="big">${ap.shiny?'✨ ':''}${esc(ap.nome)} <span class="mut" style="font-weight:400">Nv ${ap.level}</span></div>
+    <div class="bar hp ${ap.hp/ap.max_hp<.3?'low':''}"><i style="width:${pct(ap.hp,ap.max_hp)}%"></i></div>
+    <div class="kv"><span>HP</span><span>${n(ap.hp)} / ${n(ap.max_hp)}</span></div>
+    <div class="kv"><span>XP</span><span>${n(ap.xp-ap.xp_nivel)} / ${n(ap.xp_prox-ap.xp_nivel)}</span></div>
+    <div class="kv"><span>Nota</span><span>${ap.nota.toFixed(2)}</span></div>`:'<span class="mut">—</span>'}
+    <div class="sub2">Equipe</div>${eq.map(p=>`<div class="pk ${p.ativo?'ativo':''}"><span>${p.shiny?'✨ ':''}${esc(p.nome)} Nv${p.level}</span><span class="mut">${n(p.hp)}/${n(p.max_hp)}</span></div>`).join('')||'<span class="mut">—</span>'}</div>
+   <div class="box"><h3>Sessão <small>${Math.floor(horas(c))}h ${Math.floor(horas(c)%1*60)}min</small></h3>
+    <div class="kv"><span>Kills</span><span>${n(c.kills)} · ${porH(c,c.kills)}/h</span></div>
+    <div class="kv"><span>XP ganho</span><span>${n(c.xp_ganho)} · ${porH(c,c.xp_ganho)}/h</span></div>
+    <div class="kv"><span>Ouro ganho</span><span>${n(c.ouro_ganho)} · ${porH(c,c.ouro_ganho)}/h</span></div>
+    <div class="kv"><span>Capturas</span><span>${n(c.capturas)}${c.shinys?' · ✨'+c.shinys:''}</span></div>
+    <div class="kv"><span>Bolas arremessadas</span><span>${n(c.arremessos)} · ${n(c.fugas)} fugas · ${n(c.pulados)} puladas</span></div>
+    <div class="kv"><span>Trocas XP Share</span><span>${n(c.trocas)}</span></div>
+    <div class="kv"><span>Compras</span><span>${n(c.compras_bolas)} bolas · ${n(c.compras_pocoes)} poções · ${n(c.compras_revives)} revives</span></div>
+    <div class="kv"><span>Gasto em compras</span><span>${n(c.gasto_compras)} coins</span></div></div></div>`;
+}
+function tAuto(c){
+  const eq=c.equipe||[], cap=c.cfg.captura, xp=c.cfg.xps, buy=c.cfg.buy;
+  const bolas=(c.catalogo||[]).map(b=>({...b,q:(c.balls||{})[b.id]||0}));
+  const rep=(t,k,mi,al)=>`<label class="r"><span>Repor ${t} abaixo de</span><input type="number" min="0" data-cfg="buy.${k}_min" value="${mi}"></label><label class="r"><span>até chegar a</span><input type="number" min="0" data-cfg="buy.${k}_alvo" value="${al}"></label>`;
+  return `<div class="grid">
+  <div class="box ${cap.ligado?'':'off'}"><h3>Captura <span style="display:flex;align-items:center;gap:10px"><small>${n(c.fila_bolas)} na fila</small>${sw('cap.ligado',cap.ligado)}</span></h3><div class="corpo">
+    <label class="r"><span>O que capturar</span><select data-cfg="cap.modo"><option value="tudo" ${cap.modo==='tudo'?'selected':''}>tudo</option><option value="novos" ${cap.modo==='novos'?'selected':''}>só espécies novas</option></select></label>
+    <label class="r"><span>Bola</span><select data-cfg="cap.bola"><option value="0">automática (1ª com estoque)</option>${opt(bolas,cap.bola,b=>[b.id,`${b.nome} (${n(b.q)})`])}</select></label>
+    <label class="r"><span>Chance mínima (%)</span><input type="number" step="0.1" min="0" data-cfg="cap.chance_min" value="${cap.chance_min}"></label>
+    <div class="kv"><span>Puladas por chance baixa</span><span>${n(c.pulados)}</span></div>
+    <div class="hint">1 arremesso por corpo, a cada 1,1 s, durante os 28 s em que ele existe. O app aprende a chance por espécie e deixa de gastar bola abaixo do mínimo.</div></div></div>
+  <div class="box ${xp.ligado?'':'off'}"><h3>XP Share <span style="display:flex;align-items:center;gap:10px"><small>${n(c.trocas)} trocas</small>${sw('xps.ligado',xp.ligado)}</span></h3><div class="corpo">
+    <label class="r"><span>Atacante</span><select data-cfg="xps.atacante"><option value="0">—</option>${opt(eq,xp.atacante,p=>[p.id,`${p.nome} Nv${p.level}`])}</select></label>
+    <label class="r"><span>Finalizador</span><select data-cfg="xps.finalizador"><option value="0">—</option>${opt(eq,xp.finalizador,p=>[p.id,`${p.nome} Nv${p.level}`])}</select></label>
+    <label class="r"><span>Limiar automático</span>${sw('xps.auto',xp.auto)}</label>
+    <label class="r"><span>Limiar de HP do alvo</span><input type="number" data-cfg="xps.limiar" value="${xp.limiar}" ${xp.auto?'disabled':''}></label>
+    <div class="hint">O atacante bate; quando o alvo cai abaixo do limiar, o finalizador entra e leva o XP do golpe final.</div></div></div>
+  <div class="box ${buy.ligado?'':'off'}" style="grid-column:1/-1"><h3>Autobuy <span style="display:flex;align-items:center;gap:10px"><small>${n(c.compras_bolas)} bolas · ${n(c.compras_pocoes)} poções · ${n(c.compras_revives)} revives · ${n(c.gasto_compras)} coins</small>${sw('buy.ligado',buy.ligado)}</span></h3><div class="corpo">
+   <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+    <div><div class="sub2" style="margin-top:0">Bolas</div>
+     <label class="r"><span>Comprar</span>${sw('buy.bola_on',buy.bola_on)}</label>
+     <label class="r"><span>Tipo</span><select data-cfg="buy.bola"><option value="0">a da automação de captura</option>${opt(bolas.filter(b=>b.compravel),buy.bola,b=>[b.id,`${b.nome} (${n(b.preco)}) — tem ${n(b.q)}`])}</select></label>${rep('','bola',buy.bola_min,buy.bola_alvo)}</div>
+    <div><div class="sub2" style="margin-top:0">Poções</div>
+     <label class="r"><span>Comprar</span>${sw('buy.poc_on',buy.poc_on)}</label>
+     <label class="r"><span>Tipo</span><select data-cfg="buy.poc"><option value="0">a 1ª da automação</option>${opt(c.pocoes||[],buy.poc,p=>[p.id,`${p.nome} (${n(p.preco)}) — tem ${n(p.q)}`])}</select></label>${rep('','poc',buy.poc_min,buy.poc_alvo)}</div>
+    <div><div class="sub2" style="margin-top:0">Revives</div>
+     <label class="r"><span>Comprar</span>${sw('buy.rev_on',buy.rev_on)}</label>
+     <label class="r"><span>Tipo</span><select data-cfg="buy.rev"><option value="0">o 1º da automação</option>${opt(c.revives||[],buy.rev,p=>[p.id,`${p.nome} (${n(p.preco)}) — tem ${n(p.q)}`])}</select></label>${rep('','rev',buy.rev_min,buy.rev_alvo)}</div>
+    <div><div class="sub2" style="margin-top:0">Limites de segurança</div>
+     <label class="r"><span>Reserva de coins</span><input type="number" min="0" data-cfg="buy.reserva" value="${buy.reserva}"></label>
+     <label class="r"><span>Teto por hora</span><input type="number" min="0" data-cfg="buy.limite_hora" value="${buy.limite_hora}"></label></div></div>
+   <div class="hint">Confere o estoque a cada 3 s e compra no NPC (até 500 por pedido) só o que cabe acima da reserva e do teto por hora.</div></div></div></div>`;
+}
+function seletorHunt(c){
+  const cat=(H[c.nick]||{}).catalogo; if(!cat)return '<div class="hint">carregando hunts…</div>';
+  const atual=cat.find(h=>h[0]===c.hunt_slug), area=HA[c.nick]||(atual?atual[3]:'kanto');
+  const lista=cat.filter(h=>h[3]===area).sort((a,b)=>a[2]-b[2]||String(a[1]).localeCompare(b[1]));
+  return `<label class="r"><span>Região</span><select data-hunt="area">${['kanto','orre','outland'].map(a=>`<option ${a===area?'selected':''}>${a}</option>`).join('')}</select></label>
+   <label class="r"><span>Hunt</span><select data-hunt="slug">${lista.map(h=>`<option value="${esc(h[0])}" ${h[0]===c.hunt_slug?'selected':''} ${h[2]>c.level?'disabled':''}>${esc(h[1])} (Nv ${h[2]})</option>`).join('')}</select></label>`;
+}
+const risco={seguro:'seguro',arriscado:'arriscado',umHit:'1 golpe mata'};
+function tHunts(c){
+  garanteHunt(c.nick);
+  const info=H[c.nick]||{}, r=info.rank;
+  const cab=`<div class="toolbar"><div class="seg">${[['xp','XP/h'],['ouro','Ouro/h'],['outland','Outland']].map(([k,t])=>`<button class="${HT===k?'on':''}" data-htab="${k}">${t}</button>`).join('')}</div><span class="sp"></span><span class="mut">${esc(info.status||'')}</span><button data-recalc="1">Recalcular</button></div>`;
+  let rank;
+  if(!r)rank=`${cab}<div class="hint">${info.status?esc(info.status):'O cálculo roda ao entrar (usa o Node e o catálogo do próprio jogo).'}</div>`;
+  else{
+    const lista=HT==='xp'?r.porXp:HT==='ouro'?r.porOuro:r.porOutland;
+    const linhas=(lista||[]).map(l=>`<tr class="${l.slug===c.hunt_slug?'atual':''} ${l.liberada?'':'bloq'}"><td>${esc(l.nome)}${l.slug===c.hunt_slug?' ◀':''}</td><td>${l.nivel}</td><td>${n(l.killsH)}</td><td>${n(l.xpPokemonH)}</td><td>${n(l.liquidoH)}</td><td>${l.mortesH}</td><td class="r-${l.risco}">${risco[l.risco]||l.risco||'—'}</td><td>${l.liberada&&l.slug!==c.hunt_slug?`<button data-ir="${esc(l.slug)}">Ir</button>`:''}</td></tr>`).join('');
+    rank=`<div class="mut" style="margin-bottom:8px">${esc(r.pokemon.nome)} Nv${r.pokemon.level} · XP ×${r.bonusXp.pokemon}${r.diaSazonal?' · dia '+esc(r.diaSazonal):''}${r.pocao?' · poção '+esc(r.pocao):''}</div>${cab}
+     <table class="tbl"><tr><th>Hunt</th><th>Nv</th><th>kills/h</th><th>XP/h</th><th>ouro/h</th><th>mortes/h</th><th>risco</th><th></th></tr>${linhas||'<tr><td colspan=8 class="mut">—</td></tr>'}</table>
+     <div class="hint">Ouro líquido já desconta poções, revives e bolas. Hunts apagadas são as que o nível ainda não abre. Fórmulas do próprio jogo (motor do BookIdle, MIT).</div>`;
+  }
+  return `<div class="grid" style="grid-template-columns:minmax(300px,1fr) 3fr"><div class="box"><h3>Trocar hunt <small>${esc(c.hunt_nome||'')}</small></h3>${seletorHunt(c)}</div><div class="box"><h3>Melhores hunts</h3>${rank}</div></div>`;
+}
+function tEventos(c){return `<div class="box"><h3>Eventos</h3><div class="log">${esc((c.log||[]).slice().reverse().join('\n'))||'—'}</div></div>`}
+
+let ultMain='';
+function rPainel(){
+  const m=$('#main');
+  if(S.layout!=='painel'){if(ultMain){ultMain='';m.innerHTML=''}return}
+  const a=document.activeElement; if(m.contains(a)&&/SELECT|INPUT|TEXTAREA/.test(a.tagName))return;
+  const c=cur(); let h;
+  if(!c)h='<div class="vazio"><div class="big">Nenhuma conta</div>Adicione uma conta para começar.</div>';
+  else if(c.modo==='scanner'||c.modo==='atuador')h=`<div class="vazio"><div class="big">${esc(c.nick)} é o ${c.modo}</div><p>O ${c.modo==='scanner'?'coletor.py':'atuador.py'} do <code>trade/</code> está rodando com esta conta (${esc(c.status)}). Acompanhe pelo botão “◆ Trade”.</p></div>`;
+  else if(!jogando(c))h=`<div class="vazio"><div class="big">${esc(c.nick)}</div><p>Escolha como jogar. Captura, XP Share, autobuy e troca de hunt funcionam nos dois modos.</p><div class="acoes"><button class="pri" data-modo="ws" data-nick="${esc(c.nick)}" data-go="1">Ligar WS (leve)</button><button data-modo="janela" data-nick="${esc(c.nick)}" data-go="1">Abrir janela</button></div></div>`;
+  else{
+    const T=[['resumo','Resumo'],['auto','Automação'],['hunts','Hunts'],['eventos','Eventos']];
+    if(!T.some(t=>t[0]===TAB))TAB='resumo';
+    h=`<div class="head"><h2>${esc(c.nick)}</h2><span class="sub">${esc(c.status)}${c.modo==='janela'?' · janela':' · websocket'}</span><span class="sp"></span></div>
+     <div class="tabs">${T.map(([k,t])=>`<button class="${TAB===k?'on':''}" data-tab="${k}">${t}</button>`).join('')}</div>`
+     +(TAB==='resumo'?tResumo(c):TAB==='auto'?tAuto(c):TAB==='hunts'?tHunts(c):tEventos(c));
+  }
+  if(h!==ultMain){const y=m.scrollTop;ultMain=h;m.innerHTML=h;m.scrollTop=y}
+}
+function rRodape(){const v=S.versao;let t=v?'jogo v'+v:'';if(v&&versaoVista&&versaoVista!==v)t+=' · atualizado (era v'+versaoVista+') — janelas recarregadas, /hunt recalculando';if(v&&!versaoVista)versaoVista=v;if($('#rodape').textContent!==t)$('#rodape').textContent=t}
+function render(){rLista();rBarra();rPainel();rRodape()}
+let q=0;function agenda(){if(!q)q=requestAnimationFrame(()=>{q=0;render()})}
+listen('contas',e=>{S=e.payload;agenda()});invoke('listar').then(s=>{S=s;render()});
+listen('hunt_info',e=>{const p=e.payload;H[p.nick]={...(H[p.nick]||{}),...Object.fromEntries(Object.entries(p).filter(([k,v])=>k!=='nick'&&v!==null))};agenda()});
+const pedidos=new Set();function garanteHunt(nick){if(pedidos.has(nick))return;pedidos.add(nick);invoke('hunt_info',{nick}).then(p=>{H[nick]={...(H[nick]||{}),...Object.fromEntries(Object.entries(p).filter(([k,v])=>k!=='nick'&&v!==null))};agenda()})}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-modo],[data-layout],[data-foco],[data-trade],[data-fechatrade],[data-sel],[data-ir],[data-htab],[data-recalc],[data-tab]');if(!t)return;
+  if(t.dataset.tab){TAB=t.dataset.tab;try{localStorage.setItem('pd_tab',TAB)}catch(x){}ultMain='';agenda();return}
+  if(t.dataset.modo){const c=S.contas.find(x=>x.nick===t.dataset.nick);invoke('set_modo',{nick:t.dataset.nick,modo:!t.dataset.go&&c.modo===t.dataset.modo?'off':t.dataset.modo}).catch(x=>alert(x));e.stopPropagation();return}
+  if(t.dataset.ir){invoke('set_hunt',{nick:cur().nick,slug:t.dataset.ir}).catch(x=>alert(x));return}
+  if(t.dataset.htab){HT=t.dataset.htab;ultMain='';agenda();return}
+  if(t.dataset.recalc){invoke('recalcular_hunt',{nick:cur().nick});return}
+  if(t.dataset.layout)invoke('set_layout',{modo:t.dataset.layout});
+  else if(t.dataset.foco)invoke('set_foco',{nick:t.dataset.foco});
+  else if(t.dataset.trade)invoke('abrir_trade').catch(x=>alert(x));
+  else if(t.dataset.fechatrade)invoke('fechar_trade');
+  else if(t.dataset.sel)invoke('set_sel',{nick:t.dataset.sel});
+});
+document.addEventListener('change',e=>{
+  if(e.target.dataset.hunt){const c=cur();
+    if(e.target.dataset.hunt==='area'){HA[c.nick]=e.target.value;ultMain='';agenda()}else invoke('set_hunt',{nick:c.nick,slug:e.target.value}).catch(x=>alert(x));return}
+  const k=e.target.dataset.cfg;if(!k)return;
+  const c=cur();const cfg=JSON.parse(JSON.stringify(c.cfg));
+  const v=e.target.type==='checkbox'?e.target.checked:(e.target.type==='number'||/\.(bola|poc|rev|atacante|finalizador)$/.test(k)?Number(e.target.value):e.target.value);
+  const [g,f]=k.split('.');(g==='cap'?cfg.captura:g==='buy'?cfg.buy:cfg.xps)[f]=v;
+  invoke('set_cfg',{nick:c.nick,cfg}).catch(x=>alert(x));
+  setTimeout(()=>{ultMain='';agenda()},150);
+});
+async function add(){try{await invoke('add_conta',{jsonSessao:$('#j').value});$('#j').value='';$('#msg').textContent='';dlg.close()}catch(e){$('#msg').textContent=e}}
+setInterval(()=>{if(!document.hidden&&S.layout==='painel')agenda()},2000);
+</script></body></html>

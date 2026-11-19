@@ -1,0 +1,26 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "windows": [
+    "main"
+  ],
+  "webviews": [
+    "ui"
+  ],
+  "permissions": [
+    "core:default",
+    "allow-listar",
+    "allow-set-modo",
+    "allow-set-cfg",
+    "allow-set-hunt",
+    "allow-recalcular-hunt",
+    "allow-hunt-info",
+    "allow-set-layout",
+    "allow-set-foco",
+    "allow-set-sel",
+    "allow-add-conta",
+    "allow-remover",
+    "allow-abrir-trade",
+    "allow-fechar-trade"
+  ]
+}
