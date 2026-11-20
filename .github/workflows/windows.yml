@@ -25,7 +25,7 @@ jobs:
           New-Item -ItemType Directory -Force dist/PokeDeck | Out-Null
           Copy-Item target/release/pokedeck.exe dist/PokeDeck/PokeDeck.exe
           Copy-Item -Recurse hunt dist/PokeDeck/hunt
-          Copy-Item LEIAME.md dist/PokeDeck/LEIAME.md
+          Copy-Item README.md dist/PokeDeck/README.md
           Compress-Archive -Path dist/PokeDeck -DestinationPath dist/PokeDeck-windows.zip
 
       - uses: actions/upload-artifact@v4

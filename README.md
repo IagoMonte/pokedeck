@@ -34,8 +34,30 @@ Entre no jogo pelo navegador, abra o F12 → *Application* → *Local Storage* �
 - Captura e Autobuy **gastam recursos de verdade** (bolas, poções, coins). Comece com mínimos/alvos pequenos e uma reserva alta.
 - Scanner/Atuador e o painel do Trade só existem na versão Linux do autor (dependem de um bot externo) e ficam ocultos aqui.
 
-O motor do `/hunt` é do [BookIdle](https://github.com/PatrickKenji/BookIdle-releases) (MIT, © 2026 Tickelicia); licença em `hunt/LICENSE-BookIdle`.
 
-## Compilar
+## Desenvolvimento
 
-Rust estável + Node. `cargo build --release` (Windows) → `target/release/pokedeck.exe`. Copie a pasta `hunt/` ao lado do `.exe`.
+Requisitos: [Rust](https://rustup.rs) estável, [Node.js](https://nodejs.org) 18+ (motor do `/hunt`) e, no Windows, o WebView2 e as
+*Build Tools* do Visual Studio (carga "Desenvolvimento para desktop com C++").
+
+```
+cargo run                 # abre o app em modo debug
+cargo build --release     # gera target/release/pokedeck.exe
+```
+
+Copie a pasta `hunt/` ao lado do `.exe` (ou defina `POKEDECK_HUNT_DIR` apontando para ela). Em dev, o app lê `hunt/` da pasta do código.
+O projeto ainda não tem testes automatizados.
+
+Variáveis de ambiente de teste: `POKEDECK_AUTO_WS` liga o modo WS de todas as contas ao abrir e `POKEDECK_AUTO_VIEW` abre as janelas do jogo.
+
+## Estrutura
+
+- `src/main.rs`: app Tauri, estado das contas, comandos da interface e janelas embutidas.
+- `src/ws.rs`: cliente websocket de cada conta (captura, XP Share, autobuy, troca de hunt).
+- `ui/index.html`: interface.
+- `hunt/`: motor de ranking de hunts em Node.
+- `capabilities/`, `permissions/`: permissões do Tauri.
+
+## Licença
+
+MIT, veja `LICENSE`. O motor em `hunt/engine.cjs` é do BookIdle (MIT), licença em `hunt/LICENSE-BookIdle`.
